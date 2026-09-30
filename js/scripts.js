@@ -14,7 +14,7 @@ let editingId = null;
 const generateId = () =>
   Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
-const saveTodo = (text, done = false, save = true, id = generateId()) => {
+const saveTodo = (text, done = false, save = true, id = generateId(), subtodos = []) => {
   const todo = document.createElement("div");
   todo.classList.add("todo");
   todo.dataset.id = id;
@@ -37,6 +37,36 @@ const saveTodo = (text, done = false, save = true, id = generateId()) => {
   deleteBtn.classList.add("remove-todo");
   deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
   todo.appendChild(deleteBtn);
+
+  const addBtn = document.createElement("button");
+  addBtn.classList.add("add-todo");
+  addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+  todo.appendChild(addBtn);
+
+  const subtodoList = document.createElement("ul");
+  subtodoList.classList.add("subtodo-list");
+  subtodoList.classList.add("hide");
+  todo.appendChild(subtodoList);
+
+  subtodos.forEach((subText) => {
+    const subtodoItem = document.createElement("li");
+    subtodoItem.classList.add("subtodo");
+
+    const subtodoCheckbox = document.createElement("input");
+    subtodoCheckbox.type = "checkbox";
+    subtodoItem.appendChild(subtodoCheckbox);
+
+    const subtodoText = document.createElement("span");
+    subtodoText.innerText = subText;
+    subtodoItem.appendChild(subtodoText);
+
+    const subtodoDeleteBtn = document.createElement("button");
+    subtodoDeleteBtn.classList.add("remove-subtodo");
+    subtodoDeleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    subtodoItem.appendChild(subtodoDeleteBtn);
+
+    subtodoList.appendChild(subtodoItem);
+  });
 
   if (done) {
     todo.classList.add("done");
@@ -106,6 +136,13 @@ document.addEventListener("click", (e) => {
   const id = todoEl.dataset.id;
   const todoTitle = todoEl.querySelector("h3").innerText;
 
+  if (targetEl.classList.contains("todo") || targetEl.tagName === "H3") {
+    const subtodoList = todoEl.querySelector(".subtodo-list");
+    if (subtodoList) {
+      subtodoList.classList.toggle("hide");
+    }
+  }
+
   if (targetEl.classList.contains("finish-todo")) {
     todoEl.classList.toggle("done");
     updateTodoStatusLocalStorage(id);
@@ -123,6 +160,67 @@ document.addEventListener("click", (e) => {
     editInput.value = todoTitle;
     editingId = id;
     editInput.focus();
+  }
+
+  if (targetEl.classList.contains("remove-subtodo")) {
+    const subtodoItem = targetEl.closest(".subtodo");
+    const todoEl = subtodoItem.closest(".todo");
+    if (subtodoItem) {
+      subtodoItem.remove();
+      updateSubtodosLocalStorage(todoEl.dataset.id);
+    }
+  }
+
+  if (targetEl.classList.contains("add-todo")) {
+    const existingSubtodoInput = todoEl.querySelector(".subtodo-input");
+
+    if (existingSubtodoInput) {
+      existingSubtodoInput.focus();
+      return;
+    }
+
+    const subtodoInput = document.createElement("input");
+    subtodoInput.type = "text";
+    subtodoInput.placeholder = "Nova tarefa";
+    subtodoInput.classList.add("subtodo-input");
+    todoEl.appendChild(subtodoInput);
+    subtodoInput.focus();
+
+    subtodoInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        subtodoInput.remove();
+      }
+      if (e.key === "Enter") {
+        const value = subtodoInput.value.trim();
+        if (!value) return;
+
+        const subtodoList = todoEl.querySelector(".subtodo-list");
+        const subtodoItem = document.createElement("li");
+        subtodoItem.classList.add("subtodo");
+        
+        const subtodoCheckbox = document.createElement("input");
+        subtodoCheckbox.type = "checkbox";
+        subtodoItem.appendChild(subtodoCheckbox);
+
+        const subtodoText = document.createElement("span");
+        subtodoText.innerText = value;
+        subtodoItem.appendChild(subtodoText);
+
+        const subtodoDeleteBtn = document.createElement("button");
+        subtodoDeleteBtn.classList.add("remove-subtodo");
+        subtodoDeleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        subtodoItem.appendChild(subtodoDeleteBtn);
+
+        if (subtodoList) {
+          subtodoList.appendChild(subtodoItem);
+        }
+
+        updateSubtodosLocalStorage(id);
+
+        subtodoInput.value = "";
+        subtodoInput.focus();
+      }
+    });
   }
 });
 
@@ -177,18 +275,35 @@ const getTodosLocalStorage = () => {
   return todos;
 };
 
+const updateSubtodosLocalStorage = (todoId) => {
+  const todos = getTodosLocalStorage();
+  const todoEl = document.querySelector(`.todo[data-id="${todoId}"]`);
+
+  if (!todoEl) return;
+
+  const subtodoElements = todoEl.querySelectorAll(".subtodo span");
+  const subtodos = Array.from(subtodoElements).map(span => span.innerText);
+
+  todos.forEach((todo) => {
+    if (todo.id === todoId) {
+      todo.subtodos = subtodos;
+    }
+  });
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
 const loadTodos = () => {
   const todos = getTodosLocalStorage();
 
   todos.forEach((todo) => {
-    saveTodo(todo.text, todo.done, false, todo.id);
+    saveTodo(todo.text, todo.done, false, todo.id, todo.subtodos || []);
   });
 };
 
 const saveTodoLocalStorage = (todo) => {
   const todos = getTodosLocalStorage();
 
-  todos.push(todo);
+  todos.push({ ...todo, subtodos: [] });
 
   localStorage.setItem("todos", JSON.stringify(todos));
 };

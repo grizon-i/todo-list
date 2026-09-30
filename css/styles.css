@@ -7,8 +7,8 @@
   --gray-200: #e5e5e5;
   --gray-100: #f3f3f3;
   --white: #ffffff;
-  --radius-lg: 28px;
-  --radius-md: 14px;
+  --radius-lg: 32px;
+  --radius-md: 16px;
   --radius-pill: 999px;
 }
 
@@ -37,7 +37,6 @@ body::before {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  
 }
 
 button {
@@ -45,8 +44,8 @@ button {
   color: var(--black);
   border: 1.5px solid var(--black);
   border-radius: var(--radius-md);
-  padding: 0.55rem 0.8rem;
-  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -76,11 +75,11 @@ button i {
 
 input,
 select {
-  padding: 0.5rem 0.8rem;
+  padding: 0.65rem 1rem;
   border: 1.5px solid var(--gray-200);
   border-radius: var(--radius-md);
   background-color: var(--gray-100);
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   outline: none;
   transition: border-color 0.2s, background-color 0.2s;
 }
@@ -104,25 +103,24 @@ button:focus-visible {
   display: none;
 }
 
-
 .todo-container {
-  max-width: 450px;
+  max-width: 600px;
   margin: 3rem auto 0;
   background-color: var(--white);
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: var(--radius-lg);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
 }
 
 .todo-container header {
   text-align: center;
-  padding: 0.3rem 1rem 0.6rem;
+  padding: 0.5rem 1rem 1rem;
   border-bottom: 1px solid var(--gray-200);
 }
 
 .todo-container header h1 {
   font-family: "Kaushan Script", cursive;
-  font-size: 1.8rem;
+  font-size: 2.3rem;
   font-weight: 530;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -130,14 +128,14 @@ button:focus-visible {
 
 #todo-form,
 #edit-form {
-  padding: 0.75rem 0.5rem;
+  padding: 1rem 0.5rem;
   border-bottom: 1px solid var(--gray-200);
 }
 
 #todo-form p,
 #edit-form p {
-  margin-bottom: 0.4rem;
-  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.35rem;
   font-weight: 600;
 }
 
@@ -147,7 +145,7 @@ button:focus-visible {
 
 .form-control input {
   flex: 1;
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
 }
 
 .form-control button {
@@ -168,18 +166,18 @@ button:focus-visible {
   margin-top: 0.8rem;
   border-color: var(--gray-200);
   color: var(--gray-700);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 #toolbar {
-  padding: 0.7rem 0.5rem;
+  padding: 1rem 0.5rem;
   border-bottom: 1px solid var(--gray-200);
   display: flex;
 }
 
 #toolbar h4 {
-  margin-bottom: 0.4rem;
-  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -216,15 +214,16 @@ button:focus-visible {
 }
 
 #todo-list {
-  padding-top: 0.4rem;
+  padding-top: 0.6rem;
 }
 
 .todo {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  padding: 0.6rem 0.9rem;
-  margin-top: 0.4rem;
+  padding: 0.8rem 1rem;
+  margin-top: 0.6rem;
   background-color: var(--gray-100);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-md);
@@ -235,17 +234,30 @@ button:focus-visible {
   border-color: var(--gray-400);
 }
 
+.subtodo-input {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.subtodo-list {
+  width: 100%;
+  list-style: none;
+}
+
 .todo h3 {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 1.30rem;
   font-weight: 500;
   overflow-wrap: anywhere;
 }
 
 .todo button {
-  margin-left: 0.4rem;
-  padding: 0.45rem 0.6rem;
-  border-radius: 10px;
+  margin-left: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 12px;
 }
 
 .done {
@@ -260,6 +272,56 @@ button:focus-visible {
   opacity: 0.7;
 }
 
+.subtodo-list li.subtodo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  gap: 0.6rem;
+}
+
+.subtodo-list li.subtodo input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.subtodo-list li.subtodo span {
+  flex: 1;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.subtodo-list li.subtodo .remove-subtodo {
+  background-color: transparent;
+  border: none;
+  color: var(--gray-700);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.subtodo-list li.subtodo .remove-subtodo:hover {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.subtodo-list li.subtodo .remove-subtodo:hover > i {
+  color: var(--white);
+}
+
+.subtodo-list li.subtodo input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--black);
+}
 
 @media (max-width: 480px) {
   .todo-container {
@@ -288,5 +350,12 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .todo-container {
+    max-width: 750px;
+    margin-top: 5rem;
   }
 }
